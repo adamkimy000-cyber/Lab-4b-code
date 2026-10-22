@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question 2 - Retrieve & Display JSON</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Book Data Output</h1>
+    <div id="content"></div>
+    <p id="error-message" class="error"></p>
+
+    <script>
+        async function loadBookData() {
+            const contentDiv = document.getElementById("content");
+            const errorPara = document.getElementById("error-message");
+
+            try {
+                // Fetch local JSON file
+                const response = await fetch("books.json");
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const books = data.books;
+
+                // (a) Display Title of the first book
+                const pTitle = document.createElement("p");
+                pTitle.textContent = `First Book Title: ${books[0].title}`;
+                contentDiv.appendChild(pTitle);
+
+                // (b) Display Author of the second book
+                const pAuthor = document.createElement("p");
+                pAuthor.textContent = `Second Book Author: ${books[1].author}`;
+                contentDiv.appendChild(pAuthor);
+
+                // (c) Display Genres of both books, grouped by title
+                const h3Genres = document.createElement("h3");
+                h3Genres.textContent = "Book Genres:";
+                contentDiv.appendChild(h3Genres);
+
+                books.forEach(book => {
+                    const pGenre = document.createElement("p");
+                    pGenre.textContent = `${book.title} — ${book.genres.join(", ")}`;
+                    contentDiv.appendChild(pGenre);
+                });
+
+            } catch (error) {
+                // Display user-friendly error message on failure
+                errorPara.textContent = "Failed to load book data. Please ensure you are running through a local server.";
+                console.error("Fetch Error:", error);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", loadBookData);
+    </script>
+
+</body>
+</html>
